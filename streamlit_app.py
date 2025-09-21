@@ -6,13 +6,13 @@ from sklearn.naive_bayes import MultinomialNB
 @st.cache_data
 def load_data():
     data = pd.read_csv('spam_ham_dataset.csv')
-    data = data.dropna(subset=['text', 'label'])
+    data = data.dropna(subset=['text', 'label_num'])  # use numeric label
     return data
 
 @st.cache_data
 def train_model(data):
     train_emails = data['text'].values
-    train_labels = data['label'].values
+    train_labels = data['label_num'].values  # 0=ham, 1=spam
     vectorizer = CountVectorizer()
     X_train = vectorizer.fit_transform(train_emails)
     classifier = MultinomialNB()
@@ -33,7 +33,7 @@ def main():
             st.warning("Please enter some email text to classify.")
         else:
             X_test = vectorizer.transform([email_text])
-            prediction = classifier.predict(X_test)[0]
+            prediction = classifier.predict(X_test)[0]  # 0 or 1
             result = "Spam" if prediction == 1 else "Not Spam"
             st.success(f"Prediction: {result}")
 
